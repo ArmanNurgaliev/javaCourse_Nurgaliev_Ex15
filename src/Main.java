@@ -9,8 +9,7 @@ public class Main {
         Text text = new Text();
 
         // Чтение из файла text.txt
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
             byte[] buffer = new byte[fileInputStream.available()];
             fileInputStream.read(buffer);
 
@@ -23,12 +22,10 @@ public class Main {
                     allText += c;
                 else if (c == ' ' || c == '\n' || c == '\t')
                     allText += " ";
-                else
-                    continue;
             }
 
             for (String s: allText.split("\\s"))
-                if (s.length() > 6)
+                if (s.length() > LENGTH)
                     bigWords.add(s);
 
             text.setText(allText);
@@ -39,18 +36,13 @@ public class Main {
         }
 
         // Запись в файл out.txt
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter("out.txt");
+        try (FileWriter fileWriter = new FileWriter("out.txt")) {
             fileWriter.write(text.getText());
             fileWriter.write("\n");
-            for (String s: text.getBigWords())
+            for (String s : text.getBigWords())
                 fileWriter.write(s + " ");
         } catch (IOException e) {
             System.out.println(e);
-        } finally {
-            if (fileWriter != null)
-                fileWriter.close();
         }
 
     }
